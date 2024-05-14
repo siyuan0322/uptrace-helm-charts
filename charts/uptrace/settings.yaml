@@ -1,0 +1,79 @@
+image:
+  repository: reg.docker.alibaba-inc.com/7brs/uptrace
+  tag: '1.7.0'
+
+clickhouse:
+  image:
+    repository: reg.docker.alibaba-inc.com/7brs/clickhouse-server
+    tag: '23.11'
+  persistence:
+    enabled: true
+    storageClassName: 'csi-ultron-prjquota' # leave empty to use the default storage class
+    size: 20Gi
+
+postgresql:
+  image:
+    repository: reg.docker.alibaba-inc.com/7brs/postgres
+    tag: '16'
+  persistence:
+    enabled: true
+    storageClassName: 'csi-ultron-prjquota' # leave empty to use the default storage class
+    size: 20Gi
+
+uptrace:
+  config:
+    pg:
+      user: postgres
+      password: postgres
+      database: uptrace
+
+otelcol:
+  enabled: false
+
+ingress:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+tolerations: &toleration
+- effect: NoExecute
+  key: node.kubernetes.io/not-ready
+  operator: Exists
+  tolerationSeconds: 300
+- effect: NoExecute
+  key: node.kubernetes.io/unreachable
+  operator: Exists
+  tolerationSeconds: 300
+- effect: NoSchedule
+  key: sigma.ali/resource-pool
+  operator: Exists
+  #value: ackee_pool
+- effect: NoSchedule
+  key: sigma.ali/is-ecs
+  operator: Exists
+- effect: NoSchedule
+  key: alibabacloud.com/partition
+  operator: Exists
+- effect: NoSchedule
+  key: sigma.ali/server-owner
+  operator: Exists
+
+dnsPolicy: &dnspolicy None
+dnsConfig: &dnsconfig
+  nameservers: ["11.163.105.32"]
+  searches:
+  - kubetask.svc.cluster.local
+  - svc.cluster.local
+  - cluster.local
+  options:
+  - name: ndots
+    value: "2"
+
+# helm --kubeconfig ~/.kube/config-88n -n kubetask install my-uptrace -f settings.yaml
+# helm --kubeconfig ~/.kube/config-88n -n kubetask delete my-uptrace

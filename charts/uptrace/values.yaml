@@ -359,3 +359,7 @@ uptrace:
 
     # Enable to log HTTP requests and database queries.
     debug: false
+
+
+dnsPolicy: ""
+dnsConfig: {}
