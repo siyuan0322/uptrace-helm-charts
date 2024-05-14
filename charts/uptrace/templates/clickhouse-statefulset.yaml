@@ -53,14 +53,15 @@ spec:
             - name: tcp
               containerPort: 9000
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          # NOTE: This may fail on intranet clusters
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.clickhouse.resources | nindent 12 }}
       {{- with .Values.clickhouse.nodeSelector }}

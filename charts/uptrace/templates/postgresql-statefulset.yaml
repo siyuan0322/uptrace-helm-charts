@@ -36,6 +36,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args: ["sed -i -r 's/#huge_pages.*?/huge_pages = off/g' /usr/share/postgresql/postgresql.conf.sample && docker-entrypoint.sh postgres"]
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -48,6 +50,8 @@ spec:
                   name: uptrace-postgresql-secret # Secret name
                   key: POSTGRES_PASSWORD
           {{- if .Values.postgresql.persistence.enabled }}
+            - name: POSTGRES_DB
+              value: uptrace
           volumeMounts:
           - name: uptrace-postgresql-data
             mountPath: /var/lib/postgresql
