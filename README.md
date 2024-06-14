@@ -1,5 +1,23 @@
 # Uptrace Helm Chart for Kubernetes
 
+
+## Simple Quickstart
+
+Clone the repository to the local.
+
+```shell
+cd uptrace-helm-charts/charts
+helm install -n uptrace --create-namespace my-uptrace ./uptrace -f uptrace/settings.yaml
+```
+
+Change the settings.yaml according to your need. A few changes this version of customized settings are:
+1. Disabled the otelcol collector, so we get rid of the need to install cert-manager and OpenTelemetry Operator.
+2. Customized image registry, toleration and dns settings to adapt to intranet cluster.
+3. Enable persistence volume for postgres and clickhouse.
+
+## Original readme is perserved for reference.
+----------------------------------------------
+
 ## Quickstart
 
 Install [cert-manager](https://cert-manager.io/docs/installation/) and
